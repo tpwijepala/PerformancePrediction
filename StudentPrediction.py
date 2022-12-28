@@ -4,6 +4,8 @@ import tensorflow as tf
 from tensorflow import keras
 from keras import layers
 
+
+
 dataFrameM = pd.read_csv('studentData/student-mat.csv');
 dataFrameP = pd.read_csv('studentData/student-por.csv');
 
@@ -34,3 +36,14 @@ def create_model(lr, fl):
                   metrics=[tf.keras.metrics.MeanSquaredError()])
     
     return model
+
+def train_model(model, dataset, epochs, batch_size, label_name, validation_split):
+    
+    features = {name:np.array(value) for name, value in dataset.items()}
+    label = np.array(features.pop(label_name))
+    history = model.fit(x=features, y=label, batch_size=batch_size, epochs=epochs, shuffle=True, validation_split=validation_split)
+    
+    epochs = history.epoch
+    hist = pd.DataFrame(history.history)
+    
+    return epochs, hist
