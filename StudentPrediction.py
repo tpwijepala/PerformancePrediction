@@ -4,7 +4,12 @@ import tensorflow as tf
 from tensorflow import keras
 from keras import layers
 
-
+feature_colums = []
+learning_rate = 0.01
+epochs = 10
+batchSize = 50
+labelName = "G3"
+validationSpit = 0.2
 
 dataFrameM = pd.read_csv('studentData/student-mat.csv');
 dataFrameP = pd.read_csv('studentData/student-por.csv');
@@ -25,23 +30,23 @@ print(data.corr()['G3'][:-1])
 # Data shows a 0.92 corr between G2 & G3
 # Other Correlations are < 0.5
 
-def create_model(lr, fl):
+def create_model(learningRate, featureLayer):
     model = tf.keras.models.Sequential()
-    model.add(fl)
+    model.add(featureLayer)
     # simple linear regressor
     model.add(tf.keras.layers.Dense(units=1, input_shape=(1,)))
     
-    model.compile(optimizer=tf.keras.omptimizers.RMSprop(lr=lr),
+    model.compile(optimizer=tf.keras.omptimizers.RMSprop(lr=learningRate),
                   lose="mean_squared_error",
                   metrics=[tf.keras.metrics.MeanSquaredError()])
     
     return model
 
-def train_model(model, dataset, epochs, batch_size, label_name, validation_split):
+def train_model(model, dataset, epochs, batchSize, labelName, validationSplit):
     
     features = {name:np.array(value) for name, value in dataset.items()}
-    label = np.array(features.pop(label_name))
-    history = model.fit(x=features, y=label, batch_size=batch_size, epochs=epochs, shuffle=True, validation_split=validation_split)
+    label = np.array(features.pop(labelName))
+    history = model.fit(x=features, y=label, batch_size=batchSize, epochs=epochs, shuffle=True, validation_split=validationSplit)
     
     epochs = history.epoch
     hist = pd.DataFrame(history.history)
