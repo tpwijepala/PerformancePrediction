@@ -12,7 +12,6 @@ labelName = "G3"
 validationSpit = 0.2
 
 dataFrameM = pd.read_csv('studentData/student-mat.csv');
-dataFrameP = pd.read_csv('studentData/student-por.csv');
 
 # print(dataFrameM)
 # print(dataFrameM.corr())
@@ -24,11 +23,14 @@ data = pd.get_dummies(dataFrameM, columns=['Mjob', 'Fjob','reason','guardian'])
 print(data)
 print(data.corr()['G3'][:-1])
 
-# print(dataFrameP)
-# print(dataFrameP.corr())
-# Data shows a 0.83 corr between G1 & G3
-# Data shows a 0.92 corr between G2 & G3
-# Other Correlations are < 0.5
+"""
+dataFrameP = pd.read_csv('studentData/student-por.csv');
+print(dataFrameP)
+print(dataFrameP.corr())
+Data shows a 0.83 corr between G1 & G3
+Data shows a 0.92 corr between G2 & G3
+Other Correlations are < 0.5
+"""
 
 def create_model(learningRate, featureLayer):
     model = tf.keras.models.Sequential()
