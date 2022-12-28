@@ -3,6 +3,7 @@ import pandas as pd
 import tensorflow as tf
 from tensorflow import keras
 from keras import layers
+from sklearn.model_selection import train_test_split
 
 feature_colums = []
 learning_rate = 0.01
@@ -12,16 +13,17 @@ labelName = "G3"
 validationSpit = 0.2
 
 dataFrameM = pd.read_csv('studentData/student-mat.csv');
+dataFrameM = pd.get_dummies(dataFrameM, columns=['Mjob', 'Fjob','reason','guardian']) # one hot encode given columns
 
-# print(dataFrameM)
-# print(dataFrameM.corr())
+dataFrameM = dataFrameM.sample(frac=1) # shuffle data
+
+print(dataFrameM)
+print(dataFrameM.corr()['G3'][:-1])
 # Data shows a 0.80 corr between G1 & G3
 # Data shows a 0.90 corr between G2 & G3
 # Other Correlations are < 0.5
 
-data = pd.get_dummies(dataFrameM, columns=['Mjob', 'Fjob','reason','guardian'])
-print(data)
-print(data.corr()['G3'][:-1])
+trainData, testData = train, test = train_test_split(dataFrameM, test_size=0.2)
 
 """
 dataFrameP = pd.read_csv('studentData/student-por.csv');
