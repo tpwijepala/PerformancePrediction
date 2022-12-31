@@ -63,12 +63,9 @@ def train_model(model, dataset, epochs, batchSize, labelName, validationSplit):
     return 0
 
 
-g1 = tf.feature_column.numeric_column("G1")
-featureColumns.append(g1)
-
-g2 = tf.feature_column.numeric_column("G2")
-featureColumns.append(g2)
-
+# Creating a feature layer | Using G1 & G2 as Parameters
+featureColumns.append(tf.feature_column.numeric_column("G1"))
+featureColumns.append(tf.feature_column.numeric_column("G2"))
 featureLayer = layers.DenseFeatures(featureColumns)
 
 model = create_model(learningRate, featureLayer)
