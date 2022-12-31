@@ -9,11 +9,11 @@ from tensorflow.keras import layers
 from sklearn.model_selection import train_test_split
 
 featureColumns = []
-learningRate = 0.01
-epochs = 10
-batchSize = 50
+learningRate = 0.005
+epochs = 80
+batchSize = 1
 labelName = "G3"
-validationSplit = 0.2
+validationSplit = 0.5
 
 dataFrameM = pd.read_csv('studentData/student-mat.csv');
 dataFrameM = pd.get_dummies(dataFrameM, columns=['Mjob', 'Fjob','reason','guardian']) # one hot encode given columns
@@ -28,7 +28,7 @@ print(dataFrameM.corr()['G3'][:-1])
 
 nessesaryCols = ["G3","G1","G2"] # columns that are being used
 dataFrameM = dataFrameM[nessesaryCols]
-trainData, testData = train, test = train_test_split(dataFrameM, test_size=0.2)
+trainData, testData = train, test = train_test_split(dataFrameM, test_size=0.3)
 
 """
 dataFrameP = pd.read_csv('studentData/student-por.csv');
