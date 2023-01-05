@@ -46,8 +46,8 @@ def create_model(learningRate, featureLayer):
     model.add(tf.keras.layers.Dense(units=1, input_shape=(1,)))
     
     model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=learningRate),
-                  loss="mean_squared_error",
-                  metrics=[tf.keras.metrics.MeanSquaredError()])
+                  loss="root_mean_squared_error",
+                  metrics=[tf.keras.metrics.RootMeanSquaredError()])
     
     print("complete creating model")
     return model
