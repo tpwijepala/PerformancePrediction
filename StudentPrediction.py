@@ -21,7 +21,7 @@ dataFrameM = pd.get_dummies(dataFrameM, columns=['Mjob', 'Fjob','reason','guardi
 dataFrameM = dataFrameM.sample(frac=1) # shuffle data
 
 # print(dataFrameM)
-print(dataFrameM.corr()['G2'][:-1])
+print(dataFrameM.corr()['G3'][:-1])
 # Data shows a 0.80 corr between G1 & G3
 # Data shows a 0.90 corr between G2 & G3
 # Other Correlations are < 0.5
