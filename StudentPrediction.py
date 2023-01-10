@@ -10,7 +10,7 @@ from sklearn.model_selection import train_test_split
 
 featureColumns = []
 learningRate = 0.005
-epochs = 80
+epochs = 50
 batchSize = 1
 labelName = "G3"
 validationSplit = 0.5
@@ -21,14 +21,14 @@ dataFrameM = pd.get_dummies(dataFrameM, columns=['Mjob', 'Fjob','reason','guardi
 dataFrameM = dataFrameM.sample(frac=1) # shuffle data
 
 # print(dataFrameM)
-print(dataFrameM.corr()['G3'][:-1])
+print(dataFrameM.corr()['G2'][:-1])
 # Data shows a 0.80 corr between G1 & G3
 # Data shows a 0.90 corr between G2 & G3
 # Other Correlations are < 0.5
 
-nessesaryCols = ["G3","G1","G2"] # columns that are being used
+nessesaryCols = ["G3","G2"] # columns that are being used
 dataFrameM = dataFrameM[nessesaryCols]
-trainData, testData = train, test = train_test_split(dataFrameM, test_size=0.3)
+trainData, testData =  train_test_split(dataFrameM, test_size=0.3)
 
 """
 dataFrameP = pd.read_csv('studentData/student-por.csv');
@@ -46,27 +46,48 @@ def create_model(learningRate, featureLayer):
     model.add(tf.keras.layers.Dense(units=1, input_shape=(1,)))
     
     model.compile(optimizer=tf.keras.optimizers.RMSprop(learning_rate=learningRate),
-                  loss="root_mean_squared_error",
+                  loss="mean_squared_error",
                   metrics=[tf.keras.metrics.RootMeanSquaredError()])
     
     print("complete creating model")
     return model
 
+
 def train_model(model, dataset, epochs, batchSize, labelName, validationSplit):
     
     features = {name:np.array(value) for name,value in dataset.items()}
-    # print(features)
+
     label = np.array(features.pop(labelName))
-    # features=tf.convert_to_tensor(features)
+    
     model.fit(x=features, y=label, batch_size=batchSize, epochs=epochs, shuffle=True, validation_split=validationSplit)
     
     return 0
 
 
-# Creating a feature layer | Using G1 & G2 as Parameters
-featureColumns.append(tf.feature_column.numeric_column("G1"))
+# Creating a feature layer | Using G2 as Parameters
 featureColumns.append(tf.feature_column.numeric_column("G2"))
+# Since G1 has a lower correlation than G2, data ends up trying to overfit even more to train w/ G1
+
 featureLayer = layers.DenseFeatures(featureColumns)
 
 model = create_model(learningRate, featureLayer)
 train_model(model, trainData, epochs, batchSize, labelName, validationSplit)
+
+# rmse and val_rmse both average around 2 with some variance
+# difference in training comes from what is in Train Data vs in Validation Data as 
+# some rows have a big difference in G2 & G3, while most have near same G2 & G3
+
+testFeatures = {name:np.array(value) for name, value in testData.items()}
+testLabel = np.array(testFeatures.pop(labelName))
+
+print("\nTest Evaluation using Trained Model")
+results = model.evaluate(testFeatures, testLabel, batch_size=batchSize)
+
+# rmse from evaluation is averages around 2 with little variance
+
+# Overall, the model does not do much and isn't very useful
+# model just uses the value from G2 to guess G3 and the rmse in training, validating and evaluating
+# changes depending on variance in data rather than how model is trained
+
+# if I try using more & different paremeters, then model will try to overfit the training model
+# as other parameters don't have a good correlation with G3
